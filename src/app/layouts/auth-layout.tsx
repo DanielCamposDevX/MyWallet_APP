@@ -1,17 +1,19 @@
-import MyWalletLogo from "@/shared/components/MyWalletLogo";
+import MyWalletLogoName from "@/shared/components/MyWalletLogoName";
 import { ThemeSelector } from "@/shared/components/ThemeSelector";
 import { Outlet } from "react-router-dom";
 
 export default function AuthLayout() {
   return (
-    <main className="relative flex-1 flex flex-col md:flex-row w-screen h-screen md:justify-between bg-primary dark:bg-secondary">
-      <aside className=" min-h-[20vh] md:w-1/2 w-full flex justify-center items-center ">
-        <MyWalletLogo variant="secondary" />
-      </aside>
-      <div className="md:w-1/2 w-full h-full max-md:rounded-t-lg md:rounded-l-2xl bg-secondary dark:bg-background relative ">
-        <ThemeSelector className="absolute top-4 right-4 z-10" />
-        <Outlet />
-      </div>
-    </main>
+    <div className="flex justify-center items-center p-10 w-screen h-screen bg-slate-300 dark:bg-accent ">
+      <main className="relative flex-1 flex flex-col md:flex-row w-full h-full rounded-xl  bg-secondary dark:bg-background   p-4 md:justify-between  ">
+        <aside className=" min-h-[20vh] md:w-1/2 w-full flex justify-center items-center bg-linear-30 bg-primary from-50% to-100% dark:bg-accent from-accent-foreground dark:from-primary rounded-xl">
+          <MyWalletLogoName variant="secondary" />
+        </aside>
+        <div className="md:w-1/2 w-full h-full rounded-xl relative ">
+          <ThemeSelector className="absolute top-4 right-4 z-10" />
+          <Outlet />
+        </div>
+      </main>
+    </div>
   );
 }

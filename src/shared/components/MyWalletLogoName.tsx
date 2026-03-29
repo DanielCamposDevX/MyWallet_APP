@@ -9,7 +9,7 @@ interface IMyWalletLogoProps extends DetailedHTMLProps<
   variant?: "primary" | "secondary";
 }
 
-export default function MyWalletLogo({
+export default function MyWalletLogoName({
   className,
   variant = "primary",
   ...props
@@ -22,13 +22,14 @@ export default function MyWalletLogo({
   return (
     <h1
       className={cn(
-        "font-extrabold w-min text-4xl flex gap-2 items-center bg-primary p-4 rounded-2xl bg-linear-60 from-50% from-accent-foreground dark:from-card",
+        "font-extrabold text-4xl flex gap-2 items-center",
         variantStyle[variant],
         className
       )}
       {...props}
     >
-      <Coins size={50} className="text-white" />
+      <Coins size={50} />
+      MyWallet
     </h1>
   );
 }
