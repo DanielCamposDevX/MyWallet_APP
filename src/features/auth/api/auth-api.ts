@@ -5,10 +5,13 @@ interface SignInRoute {
   response: { token: string; userName: string };
 }
 
-interface SignUpPayload {
-  name: string;
-  email: string;
-  password: string;
+interface SignUpRoute {
+  payload: {
+    name: string;
+    email: string;
+    password: string;
+  };
+  response: { token: string; userName: string };
 }
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -22,7 +25,8 @@ export const authApi = {
     return response.data;
   },
 
-  async signUp(payload: SignUpPayload): Promise<void> {
-    await axios.post(`${baseUrl}/signup`, payload);
+  async signUp(payload: SignUpRoute["payload"]): Promise<SignUpRoute["response"]> {
+    const response = await axios.post(`${baseUrl}/signup`, payload);
+    return response.data;
   },
 };

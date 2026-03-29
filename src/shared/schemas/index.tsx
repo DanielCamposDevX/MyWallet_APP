@@ -1,5 +1,6 @@
-import { emailSchema } from "./validators";
+import { TFunction } from "i18next";
+import { createEmailSchema } from "./validators";
 
-export const DefaultSchemas = {
-  email: emailSchema,
-};
+export const createDefaultSchemas = (t: TFunction) => ({
+  email: createEmailSchema(t),
+});

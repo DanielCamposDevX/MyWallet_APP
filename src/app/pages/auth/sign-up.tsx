@@ -1,80 +1,64 @@
-import { authApi } from "@/features/auth/api/auth-api";
-import { authSchema } from "@/features/auth/schemas/index.schema";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import MyWalletLogo from "@/shared/components/MyWalletLogo";
+import { FormInput } from "@/shared/components/form/input";
 import PageSubtitle from "@/shared/components/typography/PageSubtitle";
 import PageTitle from "@/shared/components/typography/PageTitle";
 import { Button } from "@/shared/components/ui/button";
-import Input from "@/shared/components/ui/input";
 import { yupResolver } from "@hookform/resolvers/yup";
-import axios from "axios";
-import { Coins } from "lucide-react";
-import { useEffect, useState } from "react";
+import { t } from "i18next";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { handleSignin, authSchema } = useAuth();
 
-  const { handleSubmit } = useForm({
-    resolver: yupResolver(authSchema.signin),
+  const { handleSubmit, register } = useForm({
+    resolver: yupResolver(authSchema.signup),
   });
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedPass = localStorage.getItem("passc");
-
-    if (storedUser && storedPass) {
-      const promise = axios.post(`${import.meta.env.VITE_API_URL}/signin`, {
-        email: storedUser,
-        password: storedPass,
-      });
-      promise
-        .then((response) => {
-          localStorage.setItem("token", response.data.token ?? response.data);
-
-          navigate("/home");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, []);
 
   return (
     <div className="flex justify-center items-center h-full px-10">
       <form
         className="flex flex-col gap-2 w-full max-w-[400px]"
-        onSubmit={handleSubmit(authApi.signIn)}
+        onSubmit={handleSubmit(handleSignin)}
       >
-        <div className="flex flex-col items-center text-center gap-1 mb-6">
-          <Coins size={50} className="text-primary" />
-          <PageTitle text={t("signIn.title")} />
-          <PageSubtitle text={t("signIn.subtitle")} />
+        <div className="flex flex-col gap-2 mb-6">
+          <MyWalletLogo />
+          <PageTitle text={t("signUp.title")} />
+          <PageSubtitle text={t("signUp.subtitle")} />
         </div>
-
-        <Input
-          placeholder={t("signIn.emailPlaceholder")}
+        <FormInput
+          label={t("signUp.namePlaceholder")}
+          placeholder={"**********"}
+          type="text"
+          autoComplete="name"
+          required
+          {...register("name")}
+          data-test="password"
+        />
+        <FormInput
+          label={t("signUp.emailPlaceholder")}
+          placeholder={"John@doe.com"}
           type="email"
           required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          {...register("email")}
           data-test="email"
         />
-        <Input
-          placeholder={t("signIn.passwordPlaceholder")}
+        <FormInput
+          label={t("signUp.passwordPlaceholder")}
+          placeholder={"**********"}
           type="password"
           autoComplete="new-password"
           required
-          value={pass}
-          onChange={(e) => setPass(e.target.value)}
+          {...register("password")}
           data-test="password"
         />
-        <Button type="submit">{t("signIn.submitButton")}</Button>
-        <Link to="/signup" className="text-xs text-primary">
-          {`${t("signIn.firstTime")} ${t("signIn.signUpLink")}`}
+
+        <Button type="submit" className={"mt-4"}>
+          {t("signUp.submitButton")}
+        </Button>
+        <Link to="/signin" className="text-xs text-primary">
+          {`${t("signUp.firstTime")} ${t("signUp.signUpLink")}`}
         </Link>
       </form>
     </div>

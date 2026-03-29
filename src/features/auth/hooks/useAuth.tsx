@@ -1,22 +1,37 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { InferType } from "yup";
 import { authApi } from "../api/auth-api";
-import { authSchema } from "../schemas/index.schema";
+import { createAuthSchema } from "../schemas/index.schema";
+import { SigninInput } from "../schemas/signin.schema";
+import { SignupInput } from "../schemas/signup.schema";
+import { clearAuthStore, getAuthStore, setAuthStore } from "../store/auth-store";
 
-type IHandleSignin = InferType<typeof authSchema.signin>;
+type IHandleSignin = SigninInput;
+type IHandleSignup = SignupInput;
 
 export function useAuth() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const authSchema = useMemo(() => {
+    return createAuthSchema(t);
+  }, [t]);
+
+  useEffect(() => {
+    const { token } = getAuthStore();
+
+    if (token) {
+      navigate("/home");
+    }
+  }, []);
 
   const handleSignin = useCallback(
     ({ email, password }: IHandleSignin) => {
       authApi
         .signIn({ email, password })
         .then((res) => {
-          const token = res.token;
-          const username = res.userName;
-          localStorage.setItem("mywallet-auth", JSON.stringify({ token, username }));
+          setAuthStore(res);
 
           navigate("/home");
         })
@@ -27,5 +42,26 @@ export function useAuth() {
     [navigate]
   );
 
-  return { handleSignin };
+  const handleSignup = useCallback(
+    ({ email, password, name }: IHandleSignup) => {
+      authApi
+        .signUp({ email, password, name })
+        .then((res) => {
+          setAuthStore(res);
+
+          navigate("/home");
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    },
+    [navigate]
+  );
+
+  const handleLogout = useCallback(() => {
+    clearAuthStore();
+    navigate("/signin");
+  }, []);
+
+  return { handleSignin, handleSignup, handleLogout, authSchema };
 }

@@ -1,53 +1,26 @@
-import { authApi } from "@/features/auth/api/auth-api";
-import { authSchema } from "@/features/auth/schemas/index.schema";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import MyWalletLogo from "@/shared/components/MyWalletLogo";
 import { FormInput } from "@/shared/components/form/input";
 import PageSubtitle from "@/shared/components/typography/PageSubtitle";
 import PageTitle from "@/shared/components/typography/PageTitle";
 import { Button } from "@/shared/components/ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { t } from "i18next";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function SignInPage() {
-  const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { handleSignin, authSchema } = useAuth();
 
-  const { handleSubmit } = useForm({
+  const { handleSubmit, register } = useForm({
     resolver: yupResolver(authSchema.signin),
   });
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedPass = localStorage.getItem("passc");
-
-    if (storedUser && storedPass) {
-      const promise = axios.post(`${import.meta.env.VITE_API_URL}/signin`, {
-        email: storedUser,
-        password: storedPass,
-      });
-      promise
-        .then((response) => {
-          localStorage.setItem("token", response.data.token ?? response.data);
-
-          navigate("/home");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, []);
 
   return (
     <div className="flex justify-center items-center h-full px-10">
       <form
         className="flex flex-col gap-2 w-full max-w-[400px]"
-        onSubmit={handleSubmit(authApi.signIn)}
+        onSubmit={handleSubmit(handleSignin)}
       >
         <div className="flex flex-col gap-2 mb-6">
           <MyWalletLogo />
@@ -60,8 +33,7 @@ export default function SignInPage() {
           placeholder={"John@doe.com"}
           type="email"
           required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          {...register("email")}
           data-test="email"
         />
         <FormInput
@@ -70,8 +42,7 @@ export default function SignInPage() {
           type="password"
           autoComplete="new-password"
           required
-          value={pass}
-          onChange={(e) => setPass(e.target.value)}
+          {...register("password")}
           data-test="password"
         />
         <Button type="submit" className={"mt-4"}>
