@@ -1,4 +1,4 @@
-import axios from "axios";
+import { apiClient } from "@/shared/lib/api/client";
 
 interface SignInRoute {
   payload: { email: string; password: string };
@@ -18,7 +18,7 @@ const baseUrl = import.meta.env.VITE_API_URL;
 
 export const authApi = {
   async signIn({ email, password }: SignInRoute["payload"]): Promise<SignInRoute["response"]> {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/signin`, {
+    const response = await apiClient.post(`${import.meta.env.VITE_API_URL}/signin`, {
       email: email,
       password: password,
     });
@@ -26,7 +26,8 @@ export const authApi = {
   },
 
   async signUp(payload: SignUpRoute["payload"]): Promise<SignUpRoute["response"]> {
-    const response = await axios.post(`${baseUrl}/signup`, payload);
+    console.log("ƆI");
+    const response = await apiClient.post(`${baseUrl}/signup`, payload);
     return response.data;
   },
 };

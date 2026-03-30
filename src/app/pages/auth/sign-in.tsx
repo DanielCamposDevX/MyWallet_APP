@@ -33,7 +33,8 @@ export default function SignInPage() {
           placeholder={"John@doe.com"}
           type="email"
           required
-          {...register("email")}
+          register={register}
+          name={"email"}
           data-test="email"
         />
         <FormInput
@@ -44,6 +45,8 @@ export default function SignInPage() {
           required
           {...register("password")}
           data-test="password"
+          register={register}
+          name={"password"}
         />
         <Button type="submit" className={"mt-4"}>
           {t("signIn.submitButton")}

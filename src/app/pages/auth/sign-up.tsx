@@ -10,17 +10,22 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 export default function SignUpPage() {
-  const { handleSignin, authSchema } = useAuth();
+  const { handleSignup, authSchema } = useAuth();
 
-  const { handleSubmit, register } = useForm({
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(authSchema.signup),
   });
+  console.log({ errors });
 
   return (
     <div className="flex justify-center items-center h-full px-10">
       <form
         className="flex flex-col gap-2 w-full max-w-[400px]"
-        onSubmit={handleSubmit(handleSignin)}
+        onSubmit={handleSubmit(handleSignup)}
       >
         <div className="flex flex-col gap-2 mb-6">
           <MyWalletLogo />
@@ -29,20 +34,22 @@ export default function SignUpPage() {
         </div>
         <FormInput
           label={t("signUp.namePlaceholder")}
-          placeholder={"**********"}
+          placeholder={"John Doe"}
           type="text"
           autoComplete="name"
           required
-          {...register("name")}
           data-test="password"
+          register={register}
+          name={"name"}
         />
         <FormInput
           label={t("signUp.emailPlaceholder")}
           placeholder={"John@doe.com"}
           type="email"
           required
-          {...register("email")}
           data-test="email"
+          register={register}
+          name={"email"}
         />
         <FormInput
           label={t("signUp.passwordPlaceholder")}
@@ -50,8 +57,9 @@ export default function SignUpPage() {
           type="password"
           autoComplete="new-password"
           required
-          {...register("password")}
           data-test="password"
+          register={register}
+          name={"password"}
         />
 
         <Button type="submit" className={"mt-4"}>
