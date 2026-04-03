@@ -22,7 +22,7 @@ export function useAuth() {
     const { token } = getAuthStore();
 
     if (token) {
-      navigate("/home");
+      navigate("/workspaces");
     }
   }, []);
 
@@ -33,7 +33,7 @@ export function useAuth() {
         .then((res) => {
           setAuthStore(res);
 
-          navigate("/home");
+          navigate("/workspaces");
         })
         .catch((err) => {
           alert(err);
@@ -49,7 +49,7 @@ export function useAuth() {
         .then((res) => {
           setAuthStore(res);
 
-          navigate("/home");
+          navigate("/workspaces");
         })
         .catch((err) => {
           alert(err);

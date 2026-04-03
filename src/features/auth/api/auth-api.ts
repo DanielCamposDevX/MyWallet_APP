@@ -14,20 +14,29 @@ interface SignUpRoute {
   response: { token: string; userName: string };
 }
 
-const baseUrl = import.meta.env.VITE_API_URL;
+type AuthApiResponse = {
+  token: string;
+  userName?: string;
+  name?: string;
+};
 
 export const authApi = {
   async signIn({ email, password }: SignInRoute["payload"]): Promise<SignInRoute["response"]> {
-    const response = await apiClient.post(`${import.meta.env.VITE_API_URL}/signin`, {
+    const response = await apiClient.post<AuthApiResponse>("/signin", {
       email: email,
       password: password,
     });
-    return response.data;
+    return {
+      token: response.data.token,
+      userName: response.data.userName ?? response.data.name ?? "",
+    };
   },
 
   async signUp(payload: SignUpRoute["payload"]): Promise<SignUpRoute["response"]> {
-    console.log("ƆI");
-    const response = await apiClient.post(`${baseUrl}/signup`, payload);
-    return response.data;
+    const response = await apiClient.post<AuthApiResponse>("/signup", payload);
+    return {
+      token: response.data.token,
+      userName: response.data.userName ?? response.data.name ?? "",
+    };
   },
 };
